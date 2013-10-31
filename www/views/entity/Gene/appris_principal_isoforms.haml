@@ -1,0 +1,10 @@
+- action_card = ActionCard.new
+= action_card_render action_card do
+
+  - header "gene_id", "Ensembl Gene ID"
+  - header "Ensembl Transcript ID", "Transcript"
+  = table do
+    - tsv = entity.appris_gene_info
+    - tsv
+
+

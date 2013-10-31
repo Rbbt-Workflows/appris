@@ -1,0 +1,18 @@
+appris=/$PWD filter="*.rb *.R *.js *.sass *.haml *.tsv" {
+ workflow.rb
+ lib=lib {
+  appris.rb
+ }
+ share=share{
+  releases
+ }
+ www=www {
+  views=views{
+   entity=entity{
+    Gene=Gene{
+     appris_principal_isoforms.haml
+    }
+   }
+  }
+ }
+}
