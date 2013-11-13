@@ -53,15 +53,21 @@ module Gene
 
   property :principal_isoforms => :single do
 
-    info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/latest/rest/export/id/#{self.ensembl}?source=appris&format=json"))
+    url = "http://appris.bioinfo.cnio.es/ws/latest/rest/export/id/#{self.ensembl}?source=appris&format=json"
+    begin
+      info = JSON.parse(Open.read(url))
 
-    transcript_annotations = {}
+      transcript_annotations = {}
 
-    info.each do |hash|
-      transcript_annotations[hash["transcript_id"]] = hash["annotation"]
+      info.each do |hash|
+        transcript_annotations[hash["transcript_id"]] = hash["annotation"]
+      end
+
+      Transcript.setup(transcript_annotations.select{|trans, annot| annot == "Principal Isoform" }.collect{|trans, annot| trans}, "Ensembl Transcript ID", organism)
+    rescue
+      Log.warn "Principal isoforms not found in Appris: #{self}"
+      nil
     end
-
-    Transcript.setup(transcript_annotations.select{|trans, annot| annot == "Principal Isoform" }.collect{|trans, annot| trans}, "Ensembl Transcript ID", organism)
   end
 end
 
