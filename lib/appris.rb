@@ -1,9 +1,28 @@
 require 'json'
-require 'rbbt/entity/gene'
-require 'rbbt/entity/transcript'
+require 'rbbt/resource'
+require 'rbbt/workflow'
 require 'rbbt/sources/ensembl_ftp'
 
+Workflow.require_workflow "Genomics"
+require 'rbbt/entity/gene'
+require 'rbbt/entity/transcript'
+require 'rbbt/entity/protein'
+
 module Appris
+  extend Resource
+  self.subdir = 'databases/Appris'
+
+  Appris.claim Appris.principal_isoforms, :proc do
+    url = "http://appris.bioinfo.cnio.es/download/data/appris_data.principal.homo_sapiens.tsv.gz"
+    tsv = TSV.open(url, :key_field => 1, :fields => [2], :type => :flat, :merge => true)
+    tsv.key_field = "Ensembl Gene ID"
+    tsv.fields = ["Ensembl Transcript ID"]
+    tsv.namespace = "Hsa/jan2013"
+    tsv.to_s
+  end
+
+  PRINCIPAL_ISOFORMS = Set.new(Transcript.setup(Appris.principal_isoforms.tsv.values.compact.flatten, "Ensembl Transcript ID", "Hsa/jan2013").protein.compact.sort.uniq)
+
   def self.ensembl2appris_release(release)
     return 'latest' if release == 'current'
     num = release.split("-").last.to_i
@@ -31,7 +50,11 @@ module Gene
 
 
   property :appris_gene_info => :single do
-    info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/#{appris_release}/rest/export/id/#{self.ensembl}?source=appris&format=json"))
+    begin
+      info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/#{appris_release}/rest/export/id/#{self.ensembl}?source=appris&format=json"))
+    rescue
+      raise "No Appris info on gene: #{self.name || self }"
+    end
 
     tsv = TSV.setup({}, :key_field => "Ensembl Transcript ID", :type => :list, :fields => ["Name", "Status", "Biotype", "Principal Isoform?"])
 
@@ -81,4 +104,3 @@ module Protein
     info[self.transcript]
   end
 end
-
