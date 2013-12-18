@@ -10,7 +10,7 @@ require 'rbbt/entity/protein'
 
 module Appris
   extend Resource
-  self.subdir = 'databases/Appris'
+  self.subdir = 'share/databases/Appris'
 
   Appris.claim Appris.principal_isoforms, :proc do
     url = "http://appris.bioinfo.cnio.es/download/data/appris_data.principal.homo_sapiens.tsv.gz"
