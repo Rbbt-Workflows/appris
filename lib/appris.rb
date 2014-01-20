@@ -100,7 +100,11 @@ module Protein
   end
 
   property :appris_residues => :single do
-    info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/#{appris_release}/rest/residues/id/#{self.transcript}"))
-    info[self.transcript]
+    begin
+      info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/#{appris_release}/rest/residues/id/#{self.transcript}"))
+      info[self.transcript]
+    rescue
+      nil
+    end
   end
 end
