@@ -1,7 +1,11 @@
 appris=/$PWD filter="*.rb *.R *.js *.sass *.haml *.tsv" {
  workflow.rb
  lib=lib {
-  appris.rb
+  rbbt=rbbt{
+   sources=sources{
+    appris.rb
+   }
+  }
  }
  share=share{
   releases
