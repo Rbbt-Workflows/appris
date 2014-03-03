@@ -21,7 +21,7 @@ module Appris
     tsv.to_s
   end
 
-  PRINCIPAL_ISOFORMS = Set.new(Transcript.setup(Appris.principal_isoforms.tsv.values.compact.flatten, "Ensembl Transcript ID", "Hsa/jan2013").protein.compact.sort.uniq)
+  PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ Set.new(Transcript.setup(Appris.principal_isoforms.tsv.values.compact.flatten, "Ensembl Transcript ID", "Hsa/jan2013").protein.compact.sort.uniq) }
 
   def self.ensembl2appris_release(release)
     return 'latest' if release == 'current'
