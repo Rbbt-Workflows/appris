@@ -23,7 +23,7 @@ module Appris
 
   PRINCIPAL_TRANSCRIPTS = Persist.persist("Appris principal transcripts", :marshal){ Set.new Appris.principal_isoforms.tsv.values.compact.flatten }
   #PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ Set.new(Transcript.setup(Appris.principal_isoforms.tsv.values.compact.flatten, "Ensembl Transcript ID", "Hsa/jan2013").protein.compact.sort.uniq) }
-  PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ Set.new(Transcript.setup(PRINCIPAL_TRANSCRIPTS, "Ensembl Transcript ID", "Hsa/jan2013").protein.compact.sort.uniq) }
+  PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ Set.new(Transcript.setup(PRINCIPAL_TRANSCRIPTS.to_a, "Ensembl Transcript ID", "Hsa/jan2013").protein.compact.sort.uniq) }
 
   def self.ensembl2appris_release(release)
     return 'latest' if release == 'current'
