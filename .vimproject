@@ -5,6 +5,9 @@ appris=/$PWD filter="*.rb *.R *.js *.sass *.haml *.tsv" {
    sources=sources{
     appris.rb
    }
+   entity=entity{
+    appris.rb
+   }
   }
  }
  share=share{
