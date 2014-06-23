@@ -28,7 +28,7 @@ module Appris
   PRINCIPAL_TRANSCRIPTS = Persist.persist("Appris principal transcripts", :marshal){ Set.new Appris.principal_isoforms.tsv.values.compact.flatten }
   PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ 
     index = Organism.transcripts(organism).index :target => "Ensembl Protein ID", :fields => ["Ensembl Transcript ID"], :unnamed => true
-    Set.new index.chunked_values_at(*PRINCIPAL_TRANSCRIPTS.to_a)
+    Set.new index.chunked_values_at(PRINCIPAL_TRANSCRIPTS.to_a)
   }
 
   def self.ensembl2appris_release(release)
