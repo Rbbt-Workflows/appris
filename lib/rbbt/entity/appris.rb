@@ -1,4 +1,3 @@
-
 module Gene
 
   property :appris_release => :single do
@@ -18,7 +17,9 @@ module Gene
     tsv = TSV.setup({}, :key_field => "Ensembl Transcript ID", :type => :list, :fields => ["Name", "Status", "Biotype", "Principal Isoform?"])
 
     info.each do |hash|
-      tsv[hash["transcript_id"]] = hash.values_at *["transcript_name", "status", "biotype", "annotation"]
+      next unless hash["type"] == "principal_isoform"
+      values = hash.values_at *["transcript_name", "status", "biotype", "annotation"]
+      tsv[hash["transcript_id"]] ||= values
     end
 
     tsv.entity_options = {:organism => self.organism}

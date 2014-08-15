@@ -3,11 +3,6 @@ require 'rbbt/resource'
 require 'rbbt/workflow'
 require 'rbbt/sources/ensembl_ftp'
 
-#Workflow.require_workflow "Genomics"
-#require 'rbbt/entity/gene'
-#require 'rbbt/entity/transcript'
-#require 'rbbt/entity/protein'
-
 module Appris
   extend Resource
   self.subdir = 'share/databases/Appris'
