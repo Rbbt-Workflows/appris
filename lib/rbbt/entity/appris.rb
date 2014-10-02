@@ -63,9 +63,10 @@ module Protein
   property :appris_residues => :single do
     begin
       organism_name = "homo_sapiens"
-      info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/rest/residues/id/#{organism_name}/#{self.transcript}"))
+      info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/rest/residues/id/#{organism_name}/#{self.transcript}")).first
       info[self.transcript]
-    rescue
+    rescue Exception
+      Log.exception $!
       nil
     end
   end
