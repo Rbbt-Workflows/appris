@@ -19,7 +19,7 @@ module Gene
     info.each do |hash|
       next unless hash["type"] == "principal_isoform"
       values = hash.values_at *["transcript_name", "status", "biotype", "annotation"]
-      tsv[hash["transcript_id"]] ||= values
+      tsv[hash["transcript_id"]] ||= values.collect{|v| v == "No Principal Isoform" ? "Not Principal Isoform" : v }
     end
 
     tsv.entity_options = {:organism => self.organism}
