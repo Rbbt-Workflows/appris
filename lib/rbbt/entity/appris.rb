@@ -8,7 +8,7 @@ module Gene
   property :appris_gene_info => :single do
     begin
       organism_name = "homo_sapiens"
-      info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/rest/export/id/#{organism_name}/#{self.ensembl}?source=appris&format=json"))
+      info = JSON.parse(Open.read("http://apprisws.bioinfo.cnio.es/rest/exporter/id/#{organism_name}/#{self.ensembl}?source=appris&format=json"))
 
     rescue
       raise "No Appris info on gene: #{self.name || self }"
@@ -37,7 +37,7 @@ module Gene
   property :principal_isoforms => :single do
 
     organism_name = "homo_sapiens"
-    url = "http://appris.bioinfo.cnio.es/ws/rest/export/id/#{organism_name}/#{self.ensembl}?source=appris&format=json"
+    url = "http://apprisws.bioinfo.cnio.es/rest/exporter/id/#{organism_name}/#{self.ensembl}?source=appris&format=json"
     begin
       info = JSON.parse(Open.read(url))
 
@@ -63,7 +63,7 @@ module Protein
   property :appris_residues => :single do
     begin
       organism_name = "homo_sapiens"
-      info = JSON.parse(Open.read("http://appris.bioinfo.cnio.es/ws/rest/residues/id/#{organism_name}/#{self.transcript}")).first
+      info = JSON.parse(Open.read("http://apprisws.bioinfo.cnio.es/rest/sequencer/id/#{organism_name}/#{self.transcript}")).first
       info[self.transcript]
     rescue Exception
       Log.exception $!
