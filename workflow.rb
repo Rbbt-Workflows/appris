@@ -6,7 +6,7 @@ module Appris
   extend Workflow
 
   input :genes, :array, "Genes"
-  input :organism, :string, "Organism code", "Hsa"
+  input :organism, :string, "Organism code", Appris.organism
   task :principal_transcripts => :tsv do |genes,organism|
     index = Organism.identifiers(organism).index :target => "Ensembl Gene ID", :persist => true
     ensg2enst = Organism.gene_transcripts(organism).tsv :fields => ["Ensembl Transcript ID"], :type => :flat, :persist => true

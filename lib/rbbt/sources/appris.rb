@@ -8,15 +8,15 @@ module Appris
   self.subdir = 'share/databases/Appris'
 
   def self.organism
-    "Hsa/jan2013"
+    "Hsa/dec2013"
   end
 
   Appris.claim Appris.principal_isoforms, :proc do
-    url = "http://apprisws.bioinfo.cnio.es/download/data/homo_sapiens/ens76.v8.16Apr2015/appris_data.principal.txt"
+    url = "http://apprisws.bioinfo.cnio.es/download/data/homo_sapiens/gen19.v7.9Feb2015/appris_data.principal.txt"
     tsv = TSV.open(url, :key_field => 1, :fields => [2], :type => :flat, :merge => true, :grep => "PRINCIPAL")
     tsv.key_field = "Ensembl Gene ID"
     tsv.fields = ["Ensembl Transcript ID"]
-    tsv.namespace = "Hsa/jan2013"
+    tsv.namespace = Appris.organism
     tsv.to_s
   end
 
@@ -44,4 +44,5 @@ module Appris
     ensembl2appris_release(release)
   end
 end
+Appris.principal_isoforms.produce(true)
 
