@@ -1,5 +1,5 @@
 require 'json'
-require 'rbbt/resource'
+require 'rbbt-util'
 require 'rbbt/workflow'
 require 'rbbt/sources/ensembl_ftp'
 
@@ -19,6 +19,12 @@ module Appris
     tsv.namespace = Appris.organism
     tsv.to_s
   end
+
+  Appris.claim Appris.principal_isoform_proteins, :proc do
+    tsv = Appris.principal_isoforms.tsv
+    tsv.swap_id("Ensembl Transcript ID", "Ensembl Protein ID", :identifiers => Organism.transcripts(Appris.organism)).to_s
+  end
+
 
   PRINCIPAL_TRANSCRIPTS = Persist.persist("Appris principal transcripts", :marshal){ Set.new Appris.principal_isoforms.tsv.values.compact.flatten }
   PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ 
@@ -44,5 +50,3 @@ module Appris
     ensembl2appris_release(release)
   end
 end
-Appris.principal_isoforms.produce(true)
-
