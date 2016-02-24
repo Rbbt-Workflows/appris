@@ -8,7 +8,7 @@ module Gene
   property :appris_gene_info => :single do
     begin
       organism_name = "homo_sapiens"
-      info = JSON.parse(Open.read("http://apprisws.bioinfo.cnio.es/rest/exporter/id/#{organism_name}/#{self.ensembl}?source=appris&format=json"))
+      info = JSON.parse(Open.read("http://apprisws.bioinfo.cnio.es/rest/exporter/id/#{organism_name}/#{self.ensembl}?format=json"))
 
     rescue
       raise "No Appris info on gene: #{self.name || self }"
