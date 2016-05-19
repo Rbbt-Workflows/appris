@@ -14,11 +14,11 @@ module Gene
       raise "No Appris info on gene: #{self.name || self }"
     end
 
-    tsv = TSV.setup({}, :key_field => "Ensembl Transcript ID", :type => :list, :fields => ["Name", "Status", "Biotype", "Principal Isoform?"])
+    tsv = TSV.setup({}, :key_field => "Ensembl Transcript ID", :type => :list, :fields => ["Name", "Biotype", "Reliability", "Principal Isoform?"])
 
     info.each do |hash|
       next unless hash["type"] == "principal_isoform"
-      values = hash.values_at *["transcript_name", "status", "biotype", "annotation"]
+      values = hash.values_at *["transcript_name", "biotype", 'reliability', "annotation"]
       tsv[hash["transcript_id"]] ||= values.collect{|v| v == "No Principal Isoform" ? "Not Principal Isoform" : v }
     end
 
