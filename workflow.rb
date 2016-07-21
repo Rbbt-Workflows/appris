@@ -35,6 +35,7 @@ module Appris
     dumper = TSV::Dumper.new :key_field => "Gene", :fields => ["Ensembl Protein ID"], :type => :flat, :namespace => organism
     dumper.init
     TSV.traverse step(:principal_transcripts), :into => dumper do |gene, transcripts|
+      gene = gene.first if Array === gene
       proteins = enst2ensp.values_at(*transcripts).compact.uniq
       [gene, proteins]
     end
