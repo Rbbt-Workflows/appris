@@ -12,7 +12,7 @@ module Appris
   end
 
   Appris.claim Appris.principal_isoforms, :proc do
-    url = "http://apprisws.bioinfo.cnio.es/download/data/homo_sapiens/gen19.v7.9Feb2015/appris_data.principal.txt"
+    url = "http://apprisws.bioinfo.cnio.es/download/current_release/datafiles/homo_sapiens/g19v20/appris_data.principal.txt"
     tsv = TSV.open(url, :key_field => 1, :fields => [2], :type => :flat, :merge => true, :grep => "PRINCIPAL")
     tsv.key_field = "Ensembl Gene ID"
     tsv.fields = ["Ensembl Transcript ID"]
