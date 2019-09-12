@@ -8,7 +8,7 @@ module Appris
   self.subdir = 'share/databases/Appris'
 
   def self.organism
-    "Hsa/dec2013"
+    "Hsa/feb2014"
   end
 
   Appris.claim Appris.principal_isoforms, :proc do
