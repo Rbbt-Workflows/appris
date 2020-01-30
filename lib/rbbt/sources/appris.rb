@@ -49,4 +49,25 @@ module Appris
     release = organism.index("/") ? Ensembl.releases[organism.split("/").last] : 'current'
     ensembl2appris_release(release)
   end
+
+  def self.ensg2principal_enst
+    @ensg2principal_enst ||= begin
+                               Organism.transcripts(self.organism).index :tsv_grep => PRINCIPAL_TRANSCRIPTS.to_a, :target => "Ensembl Transcript ID", :persist => true, :fields => ["Ensembl Gene ID"]
+                             end
+  end
+
+  def self.ensg2principal_ensp
+    @ensg2principal_ensp ||= begin
+                               Organism.transcripts(self.organism).index :tsv_grep => PRINCIPAL_TRANSCRIPTS.to_a, :target => "Ensembl Protein ID", :persist => true, :fields => ["Ensembl Gene ID"]
+                             end
+  end
+end
+
+
+if __FILE__ == $0
+  Log.severity = 0
+
+  Log.tsv Appris.ensg2principal_enst
+  iii Appris.ensg2principal_enst["ENSG00000003509"]
+  iii Appris.ensg2principal_ensp["ENSG00000003509"]
 end
