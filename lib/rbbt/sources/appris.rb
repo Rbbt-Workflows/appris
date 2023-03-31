@@ -25,7 +25,6 @@ module Appris
 
   %w(Hsa Mmu Rno).each do |organism|
     codes = Organism.organism_codes(organism)
-    scientific_name = Organism.scientific_name(organism).downcase.sub(" ", "_")
     builds = {}
     codes.each do |code|
       build = Organism.GRC_build(code)
@@ -34,6 +33,8 @@ module Appris
     end
     builds.each do |build, orgs|
       Appris.claim Appris[organism][build].principal_isoforms, :proc do
+        scientific_name = Organism.scientific_name(organism).downcase.sub(" ", "_")
+
         url = "http://apprisws.bioinfo.cnio.es/pub/current_release/datafiles/#{scientific_name}/#{build}/appris_data.principal.txt"
         tsv = TSV.open(url, :key_field => 1, :fields => [2], :type => :flat, :merge => true, :grep => "PRINCIPAL")
         tsv.key_field = "Ensembl Gene ID"
@@ -49,6 +50,8 @@ module Appris
 
       %w(firestar spade thump crash).each do |method|
         Appris.claim Appris[organism][build].annotations[method], :proc do
+          scientific_name = Organism.scientific_name(organism).downcase.sub(" ", "_")
+
           tsv = TSV.setup({}, "Ensembl Transcript ID~Location,Feature,Feature_value#:type=:double")
           url = "http://apprisws.bioinfo.cnio.es/pub/current_release/datafiles/#{scientific_name}/#{build}/appris_method.#{method}.gtf.gz"
           TSV.traverse Open.open(url), :type => :array do |line|
@@ -128,12 +131,17 @@ module Appris
     tsv.swap_id("Ensembl Transcript ID", "Ensembl Protein ID", :identifiers => Organism.transcripts(Appris.organism)).to_s
   end
 
+  def self.principal_transcript_list
+    Persist.persist("Appris principal transcripts", :marshal){ Set.new Appris.principal_isoforms.tsv.values.compact.flatten }
+  end
 
-  PRINCIPAL_TRANSCRIPTS = Persist.persist("Appris principal transcripts", :marshal){ Set.new Appris.principal_isoforms.tsv.values.compact.flatten }
-  PRINCIPAL_ISOFORMS = Persist.persist("Appris principal isoforms", :marshal){ 
-    index = Organism.transcripts(organism).index :target => "Ensembl Protein ID", :fields => ["Ensembl Transcript ID"], :unnamed => true
-    Set.new index.chunked_values_at(PRINCIPAL_TRANSCRIPTS.to_a)
-  }
+  def self.principal_isoform_list
+    Persist.persist("Appris principal isoforms", :marshal){ 
+      index = Organism.transcripts(organism).index :target => "Ensembl Protein ID", :fields => ["Ensembl Transcript ID"], :unnamed => true
+      Set.new index.chunked_values_at(principal_transcript_list.to_a).compact
+    }
+  end
+
 
   def self.ensembl2appris_release(release)
     return 'latest' if release == 'current'
@@ -155,13 +163,13 @@ module Appris
 
   def self.ensg2principal_enst
     @ensg2principal_enst ||= begin
-                               Organism.transcripts(self.organism).index :tsv_grep => PRINCIPAL_TRANSCRIPTS.to_a, :target => "Ensembl Transcript ID", :persist => true, :fields => ["Ensembl Gene ID"]
+                               Organism.transcripts(self.organism).index :tsv_grep => principal_transcript_list.to_a, :target => "Ensembl Transcript ID", :persist => true, :fields => ["Ensembl Gene ID"]
                              end
   end
 
   def self.ensg2principal_ensp
     @ensg2principal_ensp ||= begin
-                               Organism.transcripts(self.organism).index :tsv_grep => PRINCIPAL_TRANSCRIPTS.to_a, :target => "Ensembl Protein ID", :persist => true, :fields => ["Ensembl Gene ID"]
+                               Organism.transcripts(self.organism).index :tsv_grep => principal_transcript_list.to_a, :target => "Ensembl Protein ID", :persist => true, :fields => ["Ensembl Gene ID"]
                              end
   end
 end

@@ -17,7 +17,7 @@ module Appris
       if ensg
         enst = ensg2enst[ensg]
         if enst
-          enst = PRINCIPAL_TRANSCRIPTS & enst
+          enst = Appris.principal_transcript_list & enst
           [gene, enst.to_a]
         else
           [gene, []]
