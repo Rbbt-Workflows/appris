@@ -49,7 +49,7 @@ module Appris
       end
 
       %w(firestar spade thump crash).each do |method|
-        Appris.claim Appris[organism][build].annotations[method], :proc do
+        Appris.claim Appris[organism][build]["annotations"][method], :proc do
           scientific_name = Organism.scientific_name(organism).downcase.sub(" ", "_")
 
           tsv = TSV.setup({}, "Ensembl Transcript ID~Location,Feature,Feature_value#:type=:double")
