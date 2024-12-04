@@ -81,10 +81,10 @@ module Appris
       end
 
       Appris.claim Appris[organism][build].protein_annotations, :proc do
-        firestar = Appris[organism][build].annotations.firestar.tsv
-        spade = Appris[organism][build].annotations.spade.tsv
-        thump = Appris[organism][build].annotations.thump.tsv
-        crash = Appris[organism][build].annotations.crash.tsv
+        firestar = Appris[organism][build]["annotations"].firestar.tsv
+        spade = Appris[organism][build]["annotations"].spade.tsv
+        thump = Appris[organism][build]["annotations"].thump.tsv
+        crash = Appris[organism][build]["annotations"].crash.tsv
         tsv = firestar
         tsv = tsv.merge_zip spade
         tsv = tsv.merge_zip thump
